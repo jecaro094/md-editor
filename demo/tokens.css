@@ -1,0 +1,20 @@
+/*
+ * Theme tokens for the standalone demo. In `tech-docs` these come from the
+ * site's `global.css`; here we define them so the editor and `.doc` prose have a
+ * palette to read.
+ */
+:root {
+  --bg: #0f1115;
+  --fg: #e4ece6;
+  --muted: #97a89d;
+  --accent: #3ddc84;
+  --accent-strong: #2bb673;
+  --lime: #c6ff4f;
+  --border: #262a33;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, Menlo, monospace;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+#app {
+  height: 100%;
+}

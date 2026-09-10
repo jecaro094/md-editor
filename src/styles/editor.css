@@ -1,0 +1,234 @@
+/*
+ * Editor chrome: the frame, the top bar and the toast stack. The preview pane
+ * carries `.doc` and is styled by `doc.css`. Colours read the host theme tokens
+ * and fall back to a dark palette so the editor is usable standalone.
+ *
+ * DOM built by `mountEditor`:
+ *   .mde
+ *     .mde-bar        > .mde-bar-left (.mde-bar-link* .mde-title .mde-status)
+ *                       .mde-bar-actions (.mde-toggle .mde-save)
+ *     .mde-main[data-preview]
+ *       .mde-pane.mde-editor-pane
+ *       .mde-pane.doc.mde-preview
+ *   .mde-toasts  (appended to <body>)
+ */
+
+/* Optional helper for the host page's wrapper element. */
+.mde-host {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.mde {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg, #0f1115);
+  color: var(--fg, #e4ece6);
+}
+
+/* Top bar */
+.mde-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--border, #262a33);
+  background: rgba(15, 17, 21, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.mde-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.mde-bar-link {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
+  font-size: 0.8rem;
+  color: var(--muted, #97a89d);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mde-bar-link:hover {
+  color: var(--fg, #e4ece6);
+}
+
+.mde-title {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
+  font-size: 0.8rem;
+  color: var(--fg, #e4ece6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mde-status {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted, #97a89d);
+  white-space: nowrap;
+}
+.mde-status[data-dirty="true"] {
+  color: var(--lime, #c6ff4f);
+}
+.mde-status[data-dirty="true"]::before {
+  content: "● ";
+}
+
+.mde-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.mde-bar-actions button {
+  font: inherit;
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.95rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent, #3ddc84);
+  color: var(--bg, #0f1115);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.mde-bar-actions button:hover {
+  background: var(--accent-strong, #2bb673);
+}
+.mde-bar-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Preview toggle — a ghost button next to the accent Save button */
+.mde-bar-actions .mde-toggle {
+  background: transparent;
+  color: var(--muted, #97a89d);
+  border: 1px solid var(--border, #262a33);
+}
+.mde-bar-actions .mde-toggle::before {
+  content: "○ ";
+}
+.mde-bar-actions .mde-toggle:hover {
+  background: transparent;
+  color: var(--fg, #e4ece6);
+  border-color: var(--muted, #97a89d);
+}
+.mde-bar-actions .mde-toggle[aria-pressed="true"] {
+  color: var(--fg, #e4ece6);
+  border-color: var(--accent, #3ddc84);
+}
+.mde-bar-actions .mde-toggle[aria-pressed="true"]::before {
+  content: "● ";
+  color: var(--accent, #3ddc84);
+}
+
+/* Split view */
+.mde-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.mde-main[data-preview="off"] {
+  grid-template-columns: 1fr;
+}
+.mde-main[data-preview="off"] .mde-preview {
+  display: none;
+}
+.mde-main[data-preview="off"] .mde-editor-pane {
+  border-right: 0;
+}
+
+.mde-pane {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.mde-editor-pane {
+  border-right: 1px solid var(--border, #262a33);
+}
+.mde-editor-pane .cm-editor {
+  height: 100%;
+}
+.mde-editor-pane .cm-scroller {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.mde-preview {
+  padding: 1rem 1.75rem 4rem;
+}
+
+/* Toasts */
+.mde-toasts {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: min(28rem, 90vw);
+}
+.mde-toast {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border, #262a33);
+  border-left: 3px solid var(--muted, #97a89d);
+  border-radius: 8px;
+  background: linear-gradient(145deg, #171b23, #12151b);
+  color: var(--fg, #e4ece6);
+  animation: mde-fade-in-up 0.2s ease both;
+}
+.mde-toast-ok {
+  border-left-color: var(--accent, #3ddc84);
+}
+.mde-toast-danger {
+  border-left-color: #f2555a;
+}
+
+@keyframes mde-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 800px) {
+  .mde-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .mde-main[data-preview="off"] {
+    grid-template-rows: 1fr;
+  }
+  .mde-editor-pane {
+    border-right: 0;
+    border-bottom: 1px solid var(--border, #262a33);
+  }
+  .mde-main[data-preview="off"] .mde-editor-pane {
+    border-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mde-toast {
+    animation: none;
+  }
+}

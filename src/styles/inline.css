@@ -1,0 +1,7 @@
+/*
+ * Inline live-preview decorations (Fase E3 — not implemented yet).
+ *
+ * This file is a placeholder so the `@jecaro/md-editor/styles/inline.css`
+ * subpath export resolves. It will hold the styling for the CodeMirror block
+ * widgets and revealed-syntax marks once `mode: 'inline'` lands.
+ */

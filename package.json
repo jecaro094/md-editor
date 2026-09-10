@@ -1,0 +1,64 @@
+{
+  "name": "@jecaro/md-editor",
+  "version": "0.1.0",
+  "description": "Inline / split-view Markdown editor built on CodeMirror 6, plus the shared remark/rehype rendering pipeline it uses.",
+  "license": "MIT",
+  "author": "jecaro094",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./markdown": {
+      "types": "./dist/markdown.d.ts",
+      "default": "./dist/markdown.js"
+    },
+    "./adapters/http": {
+      "types": "./dist/adapters/http.d.ts",
+      "default": "./dist/adapters/http.js"
+    },
+    "./styles/editor.css": "./dist/styles/editor.css",
+    "./styles/doc.css": "./dist/styles/doc.css",
+    "./styles/inline.css": "./dist/styles/inline.css"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/copy-styles.mjs",
+    "dev": "tsup --watch --onSuccess \"node scripts/copy-styles.mjs\"",
+    "demo": "vite demo",
+    "typecheck": "tsc --noEmit",
+    "prepare": "tsup && node scripts/copy-styles.mjs"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.18.0",
+    "@codemirror/commands": "^6.7.0",
+    "@codemirror/lang-markdown": "^6.5.2",
+    "@codemirror/language-data": "^6.5.2",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@codemirror/view": "^6.34.0",
+    "@shikijs/rehype": "^3.23.0",
+    "codemirror": "^6.0.2",
+    "rehype-stringify": "^10.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0",
+    "mdast-util-to-string": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vite": "^5.4.0"
+  }
+}
