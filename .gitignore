@@ -1,4 +1,35 @@
+# Dependencies
 node_modules/
+
+# Build output (tsup dist/, playground + app/ vite builds — all rebuilt by `prepare`)
 dist/
 *.tgz
+*.tsbuildinfo
+
+# Tauri (app/)
+app/src-tauri/target/
+app/src-tauri/gen/
+*.dmg
+*.app
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
+# Untracked planning doc (see CLAUDE.md → "PLAN-EDITOR.md")
+/PLAN-EDITOR.md
+
+# Editors / OS
 .DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
