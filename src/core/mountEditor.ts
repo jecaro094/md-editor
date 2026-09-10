@@ -87,16 +87,25 @@ export function mountEditor(
 
   const bar = el('header', 'mde-bar');
   const barLeft = el('div', 'mde-bar-left');
-  for (const link of actions) {
-    const a = el('a', 'mde-bar-link', link.label);
-    a.href = link.href;
-    if (link.newTab) {
-      a.target = '_blank';
-      a.rel = 'noreferrer';
+  for (const action of actions) {
+    if (action.onClick && !action.href) {
+      const b = el('button', 'mde-bar-link mde-bar-btn', action.label);
+      b.type = 'button';
+      b.addEventListener('click', () => action.onClick?.());
+      barLeft.append(b);
+    } else {
+      const a = el('a', 'mde-bar-link', action.label);
+      a.href = action.href ?? '#';
+      if (action.newTab) {
+        a.target = '_blank';
+        a.rel = 'noreferrer';
+      }
+      barLeft.append(a);
     }
-    barLeft.append(a);
   }
-  if (title) barLeft.append(el('span', 'mde-title', title));
+  const titleEl = el('span', 'mde-title', title ?? '');
+  titleEl.hidden = !title;
+  barLeft.append(titleEl);
   const statusEl = el('span', 'mde-status', 'Saved');
   statusEl.dataset.dirty = 'false';
   barLeft.append(statusEl);
@@ -343,6 +352,10 @@ export function mountEditor(
         changes: { from: 0, to: view.state.doc.length, insert: next },
       });
       refreshStatus();
+    },
+    setTitle: (next: string) => {
+      titleEl.textContent = next;
+      titleEl.hidden = next === '';
     },
     isDirty,
     getMode: () => mode,

@@ -101,8 +101,21 @@ npm install && npm run build && npm link
 npm link @jecaro/md-editor
 ```
 
-Run `npm run dev` here for a rebuild-on-change watch. `npm run demo` serves the
-standalone demo (inline mode, `localRenderer`).
+Run `npm run dev` here for a rebuild-on-change watch.
+
+## Playground
+
+```sh
+npm run playground
+```
+
+Serves the editor standalone (Vite, no backend). **Open file…** in the top bar
+uses the File System Access API to load a `.md` from disk; **Save** / `Mod-S`
+writes back to that same file. The preview runs through `localRenderer()` — the
+pipeline `tech-docs` ships — and the shell copies that repo's fonts, base scale
+and background, so inline mode looks like `/tech-docs/<slug>/edit` there.
+
+Needs a Chromium browser (Chrome / Edge) for the file API.
 
 ## License
 

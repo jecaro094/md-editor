@@ -35,7 +35,7 @@
   "scripts": {
     "build": "tsup && node scripts/copy-styles.mjs",
     "dev": "tsup --watch --onSuccess \"node scripts/copy-styles.mjs\"",
-    "demo": "vite demo",
+    "playground": "vite playground",
     "typecheck": "tsc --noEmit",
     "prepare": "tsup && node scripts/copy-styles.mjs"
   },

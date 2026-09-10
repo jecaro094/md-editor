@@ -47,8 +47,11 @@ export interface EditorOptions {
   previewDebounceMs?: number;
   /** Shown in the top bar (e.g. the file name). */
   title?: string;
-  /** Extra links rendered on the left of the top bar (e.g. "← Back", "View ↗"). */
-  actions?: EditorBarLink[];
+  /**
+   * Extra items on the left of the top bar. Each is either a link (`href`) or a
+   * button (`onClick`) — e.g. "← Back", "View ↗", "Open file…".
+   */
+  actions?: EditorBarAction[];
   /**
    * Key under which the mode toggle is remembered in `localStorage`. Pass
    * `null` to disable persistence. Default `'md-editor:mode'`.
@@ -56,15 +59,24 @@ export interface EditorOptions {
   persistModeKey?: string | null;
 }
 
-export interface EditorBarLink {
+export interface EditorBarAction {
   label: string;
-  href: string;
+  /** Render as a link. Mutually exclusive with `onClick`. */
+  href?: string;
+  /** Open the link in a new tab. Only meaningful with `href`. */
   newTab?: boolean;
+  /** Render as a button and call this on click. Mutually exclusive with `href`. */
+  onClick?: () => void;
 }
+
+/** @deprecated renamed to {@link EditorBarAction}; kept as an alias. */
+export type EditorBarLink = EditorBarAction;
 
 export interface EditorHandle {
   getValue(): string;
   setValue(next: string): void;
+  /** Update the file-name label in the top bar (pass '' to hide it). */
+  setTitle(title: string): void;
   isDirty(): boolean;
   getMode(): EditorMode;
   setMode(mode: EditorMode): void;

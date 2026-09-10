@@ -57,6 +57,15 @@
   color: var(--fg, #e4ece6);
 }
 
+/* A bar item rendered as a <button> (e.g. "Open file…") — looks like a link. */
+.mde-bar-link.mde-bar-btn {
+  font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
 .mde-title {
   font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
   font-size: 0.8rem;
