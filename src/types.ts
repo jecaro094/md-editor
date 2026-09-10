@@ -25,6 +25,13 @@ export interface EditorOptions {
   mode?: EditorMode;
   /** Renders the preview pane. Required for `'split'` / `'inline'`. */
   renderer?: Renderer;
+  /**
+   * Pre-rendered HTML for the preview pane, e.g. from a server render of the
+   * same document. When given, the pane shows it immediately and the first
+   * `renderer` call is deferred until the first edit or mode toggle — so a
+   * split view opens without a flash of empty preview.
+   */
+  initialPreviewHtml?: string;
   /** Persisted on `Mod-S` and the Save button. Throw to signal failure. */
   onSave?: (content: string) => Promise<void> | void;
   /** Fires whenever the dirty flag flips. */

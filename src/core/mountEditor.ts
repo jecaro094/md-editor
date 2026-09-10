@@ -62,6 +62,7 @@ export function mountEditor(
     renderer,
     onSave,
     onDirtyChange,
+    initialPreviewHtml,
     previewDebounceMs = DEFAULT_DEBOUNCE,
     title,
     actions = [],
@@ -101,6 +102,12 @@ export function mountEditor(
   const editorPane = el('div', 'mde-pane mde-editor-pane');
   const previewEl = el('article', 'mde-pane doc mde-preview');
   main.append(editorPane, previewEl);
+
+  let previewSeeded = false;
+  if (initialPreviewHtml != null) {
+    previewEl.innerHTML = initialPreviewHtml;
+    previewSeeded = true;
+  }
 
   root.append(bar, main);
   host.append(root);
@@ -245,6 +252,7 @@ export function mountEditor(
     autocompletion({ override: [admonitionSource] }),
     EditorView.updateListener.of((u) => {
       if (u.docChanged) {
+        previewSeeded = false; // the seed no longer reflects the buffer
         schedulePreview();
         refreshStatus();
       }
@@ -268,7 +276,12 @@ export function mountEditor(
         /* private mode — toggle still works in-session */
       }
     }
-    if (previewVisible) runPreview();
+    if (previewVisible) {
+      // A server-seeded pane is already current — skip the redundant first
+      // render, then behave normally on every subsequent call.
+      if (previewSeeded) previewSeeded = false;
+      else runPreview();
+    }
   }
   toggleBtn.addEventListener('click', () => {
     mode = previewVisible ? 'source' : 'split';
@@ -282,6 +295,7 @@ export function mountEditor(
   window.addEventListener('beforeunload', onBeforeUnload);
 
   // Initial paint: reflect the (possibly persisted) mode and render once.
+  if (previewSeeded) wireCopyButtons(previewEl);
   applyMode();
 
   return {
