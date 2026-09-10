@@ -21,6 +21,23 @@
   padding-block: 1rem 4rem;
 }
 
+/*
+ * Inline mode should read like the published page, not like a code editor: drop
+ * the `oneDark` editor/gutter background so the host's `--bg` (and the drifting
+ * blobs behind it) shows through, exactly as on a rendered doc. `!important` is
+ * needed because `oneDark` injects these as a CodeMirror theme. Split / source
+ * mode keep the `oneDark` surface.
+ */
+.mde-main[data-mode="inline"] .cm-editor,
+.mde-main[data-mode="inline"] .cm-editor .cm-gutters,
+.mde-main[data-mode="inline"] .cm-editor .cm-activeLine,
+.mde-main[data-mode="inline"] .cm-editor .cm-activeLineGutter {
+  background: transparent !important;
+}
+.mde-main[data-mode="inline"] .cm-editor .cm-gutters {
+  border-right: 0;
+}
+
 /* --- inline syntax marks ------------------------------------------------- */
 .cm-md-heading {
   font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
@@ -42,13 +59,15 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+/* Match `doc.css`'s `.doc :not(pre) > code` exactly so an inline `code` span
+   looks identical whether it is revealed syntax here or rendered in the preview. */
 .cm-md-code {
   font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
-  font-size: 0.9em;
+  font-size: 0.88em;
   background: rgba(61, 220, 132, 0.12);
   border: 1px solid rgba(61, 220, 132, 0.3);
   border-radius: 6px;
-  padding: 0.05em 0.35em;
+  padding: 0.12rem 0.4rem;
   color: var(--lime, #c6ff4f);
 }
 
