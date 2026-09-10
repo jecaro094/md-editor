@@ -37,6 +37,9 @@ if (!host) throw new Error('#app not found');
 mountEditor(host, {
   value: SAMPLE,
   mode: 'inline',
+  // The demo always opens in inline mode to show it off; a real host usually
+  // lets `mountEditor` persist the last-used mode (the default).
+  persistModeKey: null,
   title: 'demo.md',
   renderer: localRenderer(),
   onSave: async (content) => {

@@ -1,7 +1,9 @@
 /*
  * Theme tokens for the standalone demo. In `tech-docs` these come from the
- * site's `global.css`; here we define them so the editor and `.doc` prose have a
- * palette to read.
+ * site's `global.css`; here we mirror the ones the editor and `.doc` prose read
+ * (`var(--token, fallback)` throughout) plus the base font scale, so the demo
+ * lands close to how the page looks in that repo. Fonts fall back to whatever is
+ * installed locally — the demo does not pull webfonts.
  */
 :root {
   --bg: #0f1115;
@@ -11,8 +13,26 @@
   --accent-strong: #2bb673;
   --lime: #c6ff4f;
   --border: #262a33;
-  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, Menlo, monospace;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Atkinson Hyperlegible", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono",
+    Menlo, monospace;
+  font-family: var(--font-sans);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* tech-docs' global.css scales the rem base up a touch; match it so heading
+     and prose sizes agree with that repo. */
+  font-size: 106.25%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
 }
 
 #app {
