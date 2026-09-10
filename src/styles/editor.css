@@ -170,7 +170,7 @@
 }
 .mde-editor-pane .cm-scroller {
   font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
-  font-size: 14px;
+  font-size: 15.5px;
   line-height: 1.7;
 }
 
