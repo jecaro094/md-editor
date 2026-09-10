@@ -11,6 +11,7 @@ export default defineConfig({
     index: 'src/index.ts',
     markdown: 'src/markdown/index.ts',
     'adapters/http': 'src/adapters/http.ts',
+    'adapters/local': 'src/adapters/local.ts',
   },
   format: ['esm'],
   target: 'es2022',

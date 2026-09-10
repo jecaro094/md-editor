@@ -35,6 +35,22 @@ export function remoteRenderer(
       }
       return data.html;
     },
+
+    async renderBlocks(sources: string[]): Promise<string[]> {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', ...options.headers },
+        body: JSON.stringify({ blocks: sources }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        htmls?: unknown;
+        error?: string;
+      };
+      if (!res.ok || !Array.isArray(data.htmls)) {
+        throw new Error(data.error ?? `Preview failed (${res.status})`);
+      }
+      return data.htmls.map((h) => (typeof h === 'string' ? h : ''));
+    },
   };
 }
 

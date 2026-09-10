@@ -24,6 +24,10 @@
       "types": "./dist/adapters/http.d.ts",
       "default": "./dist/adapters/http.js"
     },
+    "./adapters/local": {
+      "types": "./dist/adapters/local.d.ts",
+      "default": "./dist/adapters/local.js"
+    },
     "./styles/editor.css": "./dist/styles/editor.css",
     "./styles/doc.css": "./dist/styles/doc.css",
     "./styles/inline.css": "./dist/styles/inline.css"
@@ -39,20 +43,22 @@
     "@codemirror/autocomplete": "^6.18.0",
     "@codemirror/commands": "^6.7.0",
     "@codemirror/lang-markdown": "^6.5.2",
+    "@codemirror/language": "^6.10.0",
     "@codemirror/language-data": "^6.5.2",
     "@codemirror/state": "^6.4.1",
     "@codemirror/theme-one-dark": "^6.1.3",
     "@codemirror/view": "^6.34.0",
+    "@lezer/markdown": "^1.3.0",
     "@shikijs/rehype": "^3.23.0",
     "codemirror": "^6.0.2",
+    "mdast-util-to-string": "^4.0.0",
     "rehype-stringify": "^10.0.1",
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.0.0",
-    "mdast-util-to-string": "^4.0.0"
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@types/hast": "^3.0.4",

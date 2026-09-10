@@ -10,6 +10,13 @@
  */
 export interface Renderer {
   render(markdown: string): Promise<string>;
+  /**
+   * Optional batch entrypoint: render N self-contained blocks in one call.
+   * Inline mode renders its live-preview widgets through this; when absent it
+   * falls back to N individual `render` calls. Implementations must return one
+   * HTML string per input, in order.
+   */
+  renderBlocks?(sources: string[]): Promise<string[]>;
 }
 
 export type EditorMode = 'inline' | 'split' | 'source';

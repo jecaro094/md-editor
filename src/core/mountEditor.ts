@@ -4,13 +4,19 @@
  * Everything the old `tech-docs` `edit.astro` `<script>` did lives here now:
  * CodeMirror 6 setup, the debounced live preview, dirty tracking + the
  * `beforeunload` guard, toasts, the copy-button wiring for rendered code
- * frames, the split/source toggle and the `:::` admonition snippets. The host
- * page supplies only `value`, a `renderer`, an `onSave` handler and (optionally)
- * some top-bar links; this function builds the rest of the chrome inside `el`.
+ * frames, the view-mode toggle and the `/` snippet menu. The host page supplies
+ * only `value`, a `renderer`, an `onSave` handler and (optionally) some top-bar
+ * links; this function builds the rest of the chrome inside `el`.
+ *
+ * Three view modes, cycled by the top-bar button and persisted to
+ * `localStorage`:
+ *   - `inline`  live preview in the editor itself (block widgets + revealed syntax)
+ *   - `split`   editor left, a server-rendered `.doc` preview pane right
+ *   - `source`  plain CodeMirror, no preview
  */
 import { EditorView, basicSetup } from 'codemirror';
 import { keymap } from '@codemirror/view';
-import { EditorState, type Extension } from '@codemirror/state';
+import { Compartment, EditorState, type Extension } from '@codemirror/state';
 import { indentWithTab } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
@@ -21,6 +27,13 @@ import {
   type CompletionContext,
 } from '@codemirror/autocomplete';
 
+import {
+  containerDirective,
+  inlineExtensions,
+  markdownShortcuts,
+  pasteLink,
+  slashSource,
+} from '../inline/index.js';
 import type {
   EditorHandle,
   EditorMode,
@@ -30,6 +43,13 @@ import type {
 const ADMONITION_KINDS = ['note', 'info', 'tip', 'warning', 'danger'] as const;
 const DEFAULT_DEBOUNCE = 200;
 const DEFAULT_MODE_KEY = 'md-editor:mode';
+
+type ViewMode = 'inline' | 'split' | 'source';
+const MODE_LABEL: Record<ViewMode, string> = {
+  inline: 'Inline',
+  split: 'Split',
+  source: 'Source',
+};
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -42,15 +62,8 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-/** A view mode is only meaningfully split vs. source until inline mode lands. */
-function normalizeMode(mode: EditorMode | undefined): 'split' | 'source' {
-  if (mode === 'source') return 'source';
-  if (mode === 'inline') {
-    console.warn(
-      "[md-editor] mode: 'inline' is not implemented yet — using 'split'.",
-    );
-  }
-  return 'split';
+function normalizeMode(mode: EditorMode | undefined): ViewMode {
+  return mode === 'inline' || mode === 'source' ? mode : 'split';
 }
 
 export function mountEditor(
@@ -89,9 +102,9 @@ export function mountEditor(
   barLeft.append(statusEl);
 
   const barActions = el('div', 'mde-bar-actions');
-  const toggleBtn = el('button', 'mde-toggle', 'Preview');
+  const toggleBtn = el('button', 'mde-toggle', 'Split');
   toggleBtn.type = 'button';
-  toggleBtn.title = 'Toggle the preview pane';
+  toggleBtn.title = 'Switch view mode (inline / split / source)';
   const saveBtn = el('button', 'mde-save', 'Save');
   saveBtn.type = 'button';
   barActions.append(toggleBtn, saveBtn);
@@ -117,15 +130,22 @@ export function mountEditor(
   document.body.append(toastStack);
 
   // --- mode --------------------------------------------------------------
-  let mode: 'split' | 'source' = normalizeMode(options.mode);
+  let mode: ViewMode = normalizeMode(options.mode);
   if (persistModeKey) {
     try {
       const stored = localStorage.getItem(persistModeKey);
-      if (stored === 'split' || stored === 'source') mode = stored;
+      if (stored === 'inline' || stored === 'split' || stored === 'source') mode = stored;
     } catch {
       /* storage disabled — fall back to the option */
     }
   }
+  // `inline` and `split` both need a renderer; without one, only source is real.
+  if (!renderer && mode !== 'source') {
+    console.warn('[md-editor] no renderer supplied — falling back to source mode.');
+    mode = 'source';
+  }
+  const modeOrder: ViewMode[] = renderer ? ['inline', 'split', 'source'] : ['source'];
+  if (modeOrder.length === 1) toggleBtn.disabled = true;
   let previewVisible = mode === 'split';
 
   // --- toasts ----------------------------------------------------------------
@@ -176,7 +196,7 @@ export function mountEditor(
     onDirtyChange?.(dirty);
   }
 
-  // --- live preview, debounced -------------------------------------------
+  // --- live preview, debounced (split mode) -----------------------------
   let previewTimer: number | undefined;
   let previewSeq = 0;
   function schedulePreview() {
@@ -216,7 +236,7 @@ export function mountEditor(
     }
   }
 
-  // --- `:::` admonition snippets ---------------------------------------
+  // --- `:::` admonition snippets (kept alongside the `/` menu) ----------
   function admonitionSource(context: CompletionContext) {
     const token = context.matchBefore(/:{1,3}\w*/);
     if (!token || (token.from === token.to && !context.explicit)) return null;
@@ -233,10 +253,13 @@ export function mountEditor(
   }
 
   // --- editor ----------------------------------------------------------
+  const inlineComp = new Compartment();
+
   const extensions: Extension[] = [
     basicSetup,
     keymap.of([
       indentWithTab,
+      ...markdownShortcuts,
       {
         key: 'Mod-s',
         preventDefault: true,
@@ -246,10 +269,16 @@ export function mountEditor(
         },
       },
     ]),
-    markdown({ base: markdownLanguage, codeLanguages: languages }),
+    markdown({
+      base: markdownLanguage,
+      codeLanguages: languages,
+      extensions: [containerDirective],
+    }),
     oneDark,
     EditorView.lineWrapping,
-    autocompletion({ override: [admonitionSource] }),
+    autocompletion({ override: [slashSource, admonitionSource] }),
+    pasteLink,
+    inlineComp.of([]),
     EditorView.updateListener.of((u) => {
       if (u.docChanged) {
         previewSeeded = false; // the seed no longer reflects the buffer
@@ -264,11 +293,19 @@ export function mountEditor(
     state: EditorState.create({ doc: value, extensions }),
   });
 
-  // --- toggle --------------------------------------------------------
+  // --- mode application --------------------------------------------------
+  function inlineExt(): Extension {
+    return renderer ? inlineExtensions({ renderer, wireCopyButtons }) : [];
+  }
   function applyMode() {
     previewVisible = mode === 'split';
+    main.dataset.mode = mode;
     main.dataset.preview = previewVisible ? 'on' : 'off';
-    toggleBtn.setAttribute('aria-pressed', String(previewVisible));
+    toggleBtn.textContent = MODE_LABEL[mode];
+    toggleBtn.setAttribute('aria-pressed', String(mode === 'inline'));
+    view.dispatch({
+      effects: inlineComp.reconfigure(mode === 'inline' ? inlineExt() : []),
+    });
     if (persistModeKey) {
       try {
         localStorage.setItem(persistModeKey, mode);
@@ -284,7 +321,8 @@ export function mountEditor(
     }
   }
   toggleBtn.addEventListener('click', () => {
-    mode = previewVisible ? 'source' : 'split';
+    const i = modeOrder.indexOf(mode);
+    mode = modeOrder[(i + 1) % modeOrder.length] ?? 'source';
     applyMode();
   });
   saveBtn.addEventListener('click', () => void save());
@@ -309,7 +347,8 @@ export function mountEditor(
     isDirty,
     getMode: () => mode,
     setMode: (next: EditorMode) => {
-      mode = normalizeMode(next);
+      const wanted = normalizeMode(next);
+      mode = modeOrder.includes(wanted) ? wanted : mode;
       applyMode();
     },
     refreshPreview: () => {
