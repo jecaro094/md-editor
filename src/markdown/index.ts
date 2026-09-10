@@ -17,6 +17,23 @@ import remarkDirective from 'remark-directive';
 export const shikiTheme = 'night-owl' as const;
 
 /**
+ * Grammars Shiki loads up front. `@shikijs/rehype` otherwise defaults to
+ * *every* bundled language (~200), which means ~200 dynamic `import()`s on the
+ * first fenced block it sees — fine over a dev server, but in a packaged app
+ * (assets served through a custom protocol) it stalls the first render for
+ * seconds and, if any chunk fails to load, rejects the whole highlighter so the
+ * block silently never renders. This list covers the common cases; anything
+ * else is pulled in on demand via `lazy: true` (see `renderMarkdown`), falling
+ * back to an unhighlighted block only if that language genuinely doesn't exist.
+ */
+export const shikiLangs = [
+  'ts', 'tsx', 'js', 'jsx', 'json', 'jsonc',
+  'html', 'css', 'scss', 'md', 'mdx', 'yaml', 'toml',
+  'bash', 'shell', 'diff', 'sql', 'astro', 'vue', 'svelte',
+  'python', 'rust', 'go', 'java', 'c', 'cpp', 'ruby', 'php',
+] as const;
+
+/**
  * Split a raw `.md` string into its YAML frontmatter block and the Markdown
  * body. Shared by the editor and any save/preview endpoints so all callers
  * strip frontmatter identically before rendering or validating it.
@@ -166,7 +183,15 @@ export async function renderMarkdown(body: string): Promise<string> {
     .use(remarkDirective)
     .use(remarkAdmonitions)
     .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeShiki, { theme: shikiTheme })
+    .use(rehypeShiki, {
+      theme: shikiTheme,
+      // Load a small common set eagerly; fetch anything else the moment a block
+      // needs it, and degrade to a plain block rather than throw if it can't be
+      // resolved. See `shikiLangs`.
+      langs: [...shikiLangs],
+      lazy: true,
+      fallbackLanguage: 'text',
+    })
     .use(rehypeCodeFrame)
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(body);
