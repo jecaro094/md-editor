@@ -1,0 +1,33 @@
+[package]
+name = "md-editor-app"
+version = "0.1.0"
+description = "Tauri 2 desktop wrapper for @jecaro/md-editor"
+authors = ["jecaro094"]
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+# The `_lib` suffix keeps the desktop and (potential) mobile entrypoints apart;
+# `main.rs` just calls `md_editor_app_lib::run()`.
+name = "md_editor_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# `protocol-asset` backs `convertFileSrc()` / the `asset:` scheme used to load
+# images relative to the open `.md`. The Tauri CLI adds this itself when it sees
+# `assetProtocol.enable` in tauri.conf.json; kept explicit so a plain `cargo
+# build` matches `tauri build`.
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

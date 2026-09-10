@@ -1,0 +1,28 @@
+{
+  "name": "@jecaro/md-editor-app",
+  "version": "0.1.0",
+  "description": "Tauri 2 desktop wrapper for @jecaro/md-editor — the playground promoted to a real macOS app with disk access through Tauri instead of the browser File System Access API.",
+  "license": "MIT",
+  "author": "jecaro094",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2"
+  },
+  "devDependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5",
+    "@fontsource/jetbrains-mono": "^5",
+    "@tauri-apps/cli": "^2",
+    "typescript": "^5.6.0",
+    "vite": "^5.4.0"
+  }
+}
