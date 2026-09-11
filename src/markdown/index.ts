@@ -12,9 +12,9 @@ import type { Root as HastRoot, Element } from 'hast';
 import { visit, SKIP } from 'unist-util-visit';
 import { toString as mdastToString } from 'mdast-util-to-string';
 import remarkDirective from 'remark-directive';
+import { shikiTheme } from './theme.js';
 
-/** Shiki theme for fenced code blocks. */
-export const shikiTheme = 'night-owl' as const;
+export { shikiTheme };
 
 /**
  * Grammars Shiki loads up front. `@shikijs/rehype` otherwise defaults to
