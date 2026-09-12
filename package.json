@@ -1,6 +1,6 @@
 {
   "name": "@jecaro/md-editor",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Inline / split-view Markdown editor built on CodeMirror 6, plus the shared remark/rehype rendering pipeline it uses.",
   "license": "MIT",
   "author": "jecaro094",
