@@ -14,6 +14,7 @@ import '@fontsource/atkinson-hyperlegible/700.css';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
 import '@fontsource/jetbrains-mono/700.css';
+import '../../src/styles/theme.css';
 import './app.css';
 import '../../src/styles/editor.css';
 import '../../src/styles/doc.css';

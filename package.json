@@ -28,6 +28,7 @@
       "types": "./dist/adapters/local.d.ts",
       "default": "./dist/adapters/local.js"
     },
+    "./styles/theme.css": "./dist/styles/theme.css",
     "./styles/editor.css": "./dist/styles/editor.css",
     "./styles/doc.css": "./dist/styles/doc.css",
     "./styles/inline.css": "./dist/styles/inline.css"
@@ -66,6 +67,7 @@
     "@types/mdast": "^4.0.4",
     "tsup": "^8.3.0",
     "typescript": "^5.6.0",
+    "vfile": "^6.0.0",
     "vite": "^5.4.0"
   }
 }

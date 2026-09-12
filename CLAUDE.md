@@ -18,7 +18,7 @@ There is no test suite and no lint step. `npm run typecheck` is what CI-equivale
 
 A Markdown editor built on CodeMirror 6 plus the shared remark/rehype pipeline it renders through.
 Extracted from [`tech-docs`](https://github.com/jecaro094/tech-docs); several design choices only make
-sense in light of that consumer (see "byte-identical" note below).
+sense in light of that consumer (see the `theme.css` note below).
 
 ## Architecture
 
@@ -38,6 +38,23 @@ sense in light of that consumer (see "byte-identical" note below).
 CodeMirror or DOM graph. Never add an import from `src/markdown/` (or anything it reaches) back to
 `src/core/` or `src/inline/`. Styles are not bundled by tsup — `scripts/copy-styles.mjs` copies
 `src/styles/*.css` to `dist/styles/` after every build so the `./styles/*.css` subpath exports resolve.
+
+### Styles (`src/styles/`)
+
+Four CSS files, each independently importable via `./styles/<name>.css`:
+
+- `theme.css` — the shared dark theme: colour tokens (`--bg`, `--fg`, `--accent`, `--lime`, …), the
+  box-sizing reset, the ~17px base scale, the drifting background blobs, and the `.expressive-code`
+  frame (`.code-title-bar`, `.code-lang`, `.copy-btn`) that `rehypeCodeFrame` wraps every fenced block
+  in. This is the single source of truth for that chrome — `tech-docs`' `global.css`, `playground/app.css`,
+  and `app/src/app.css` used to each carry their own hand-copied version (with comments promising they
+  were "kept byte-identical"); they drifted anyway, so all three now `import`/`<link>` this file instead
+  and keep only what's genuinely host-specific (font-family tokens, page chrome the editor doesn't own).
+  Font tokens (`--font-sans`, `--font-mono`) are deliberately *not* set here since consumers load
+  different font stacks — the rules read `var(--font-sans, …)` with a generic fallback and expect a
+  host stylesheet loaded after this one to supply the real value.
+- `doc.css`, `inline.css`, `editor.css` — as before, scoped to `.doc` / inline-mode decorations / the
+  CM6 chrome, reading the same tokens with inline fallbacks so they still work without `theme.css`.
 
 ### The rendering pipeline (`src/markdown/index.ts`)
 
@@ -118,9 +135,10 @@ Two adapters:
 
 The editor standalone, no backend, editing real files. `main.ts` uses the File System Access API
 (`showOpenFilePicker` / `createWritable`) for open/save — so it needs Chrome or Edge — and renders
-through `localRenderer()`. `app.css` replicates `tech-docs`' `global.css` (theme tokens, ~17px scale,
-background blobs) so inline mode looks like `/tech-docs/<slug>/edit`. It imports `../src/*.ts`
-directly (not the built `dist/`).
+through `localRenderer()`. `index.html` links `../src/styles/theme.css` for the shared dark theme
+(tokens, ~17px scale, background blobs) so inline mode looks like `/tech-docs/<slug>/edit`; `app.css`
+only adds the playground's own font tokens and layout glue. It imports `../src/*.ts` directly (not the
+built `dist/`).
 
 ### Desktop app (`app/`)
 
