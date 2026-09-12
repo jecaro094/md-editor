@@ -9,6 +9,7 @@
  */
 import type { Root as MdastRoot } from 'mdast';
 import type { Root as HastRoot, Element } from 'hast';
+import type { VFile } from 'vfile';
 import { visit, SKIP } from 'unist-util-visit';
 import { toString as mdastToString } from 'mdast-util-to-string';
 import remarkDirective from 'remark-directive';
@@ -107,13 +108,38 @@ export function remarkAdmonitions() {
 }
 
 /**
+ * `remark` transform: record each fenced/indented code block's language (in
+ * document order) on `file.data.codeLangs` before `remark-rehype` and Shiki
+ * run. Shiki rebuilds the `<pre>`/`<code>` hast nodes from scratch — it does
+ * not preserve a `language-xxx` class or any other property placed on them —
+ * so this is the only point in the pipeline where the language declared on
+ * the fence (```python`) is still readable. `rehypeCodeFrame` consumes the
+ * queue afterwards, in the same document order, to label the code frame.
+ * `file.data` is per-`VFile`, so this is safe across concurrent renders.
+ */
+export function remarkStashCodeLangs() {
+  return (tree: MdastRoot, file: VFile) => {
+    const codeLangs: (string | null)[] = ((file.data.codeLangs as (string | null)[] | undefined) ??= []);
+    visit(tree, 'code', (node: any) => {
+      codeLangs.push(node.lang ?? null);
+    });
+  };
+}
+
+/**
  * `rehype` transform: wrap every top-level `<pre>` in the `.expressive-code`
- * frame (with a copy button) so fenced code blocks in prose match the framed
- * code samples the old `<Code>` component produced. The button is wired by an
- * inline script on the page / preview.
+ * frame — a header bar with the fence's language label and a copy button —
+ * so fenced code blocks in prose match the framed code samples the old
+ * `<Code>` component produced. The button is wired by an inline script on the
+ * page / preview. Must run in the same `unified` pipeline as
+ * `remarkStashCodeLangs` so `file.data.codeLangs` (queued in document order)
+ * lines up with the `<pre>` elements found here.
  */
 export function rehypeCodeFrame() {
-  return (tree: HastRoot) => {
+  return (tree: HastRoot, file: VFile) => {
+    const codeLangs = (file.data.codeLangs as (string | null)[] | undefined) ?? [];
+    let cursor = 0;
+
     visit(tree, 'element', (node: Element, index, parent) => {
       if (node.tagName !== 'pre' || parent == null || index == null) return;
       if (
@@ -124,11 +150,20 @@ export function rehypeCodeFrame() {
         return;
       }
 
-      const figure: Element = {
+      const lang = codeLangs[cursor++] ?? null;
+      const label = lang?.toLowerCase() ?? null;
+
+      const titleBar: Element = {
         type: 'element',
-        tagName: 'figure',
-        properties: { className: ['expressive-code'] },
+        tagName: 'div',
+        properties: { className: ['code-title-bar'] },
         children: [
+          {
+            type: 'element',
+            tagName: 'span',
+            properties: { className: ['code-lang'] },
+            children: label ? [{ type: 'text', value: label }] : [],
+          },
           {
             type: 'element',
             tagName: 'button',
@@ -139,8 +174,14 @@ export function rehypeCodeFrame() {
             },
             children: [{ type: 'text', value: '⧉' }],
           },
-          node,
         ],
+      };
+
+      const figure: Element = {
+        type: 'element',
+        tagName: 'figure',
+        properties: { className: ['expressive-code'] },
+        children: [titleBar, node],
       };
 
       (parent.children as unknown[])[index] = figure;
@@ -150,8 +191,10 @@ export function rehypeCodeFrame() {
 }
 
 /** Plugins shared by the consumer's build and the editor preview (order matters:
- * `remark-directive` parses `:::`, then `remarkAdmonitions` rewrites the nodes). */
-export const remarkPlugins = [remarkDirective, remarkAdmonitions];
+ * `remarkStashCodeLangs` must see the raw fence languages before anything
+ * rewrites the tree; `remark-directive` parses `:::`, then `remarkAdmonitions`
+ * rewrites the nodes). */
+export const remarkPlugins = [remarkStashCodeLangs, remarkDirective, remarkAdmonitions];
 export const rehypePlugins = [rehypeCodeFrame];
 
 /**
@@ -180,6 +223,7 @@ export async function renderMarkdown(body: string): Promise<string> {
   const file = await unified()
     .use(remarkParse)
     .use(remarkGfm)
+    .use(remarkStashCodeLangs)
     .use(remarkDirective)
     .use(remarkAdmonitions)
     .use(remarkRehype, { allowDangerousHtml: true })

@@ -134,15 +134,15 @@
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* Inline code (fenced blocks are framed by the host's `.expressive-code`) */
+/* Inline code (fenced blocks are framed by `.expressive-code`, styled in `theme.css`) */
 .doc :not(pre) > code {
   background: rgba(61, 220, 132, 0.12);
-  border: 1px solid rgba(61, 220, 132, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0);
   border-radius: 6px;
   padding: 0.12rem 0.4rem;
   font-family: var(--font-mono, "JetBrains Mono", ui-monospace, Menlo, monospace);
   font-size: 0.88em;
-  color: var(--lime, #c6ff4f);
+  color: var(--lime, #cbe6a0);
   white-space: nowrap;
 }
 
