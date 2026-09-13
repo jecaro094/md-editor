@@ -4,8 +4,12 @@
  * `src/markdown/index.ts`) produces around every fenced block —
  * `.expressive-code`, `.code-title-bar`, `.code-lang`, `.copy-btn`.
  *
- * `--bg` is pure black (#000) and flat — no gradients or glow blobs — by
- * design, so documentation pages read as a single uniform black surface.
+ * `--bg` is near-black (#090c0a) and flat — no gradients or glow blobs — by
+ * design, so documentation pages read as a single uniform dark surface. It's
+ * deliberately not pure #000: max contrast (near-white text on true black)
+ * plus code's saturated greens was flagged as eye-strain-inducing over long
+ * reading sessions, so both the page background and the Shiki theme bg
+ * (`src/markdown/theme.ts`) were nudged to this same near-black instead.
  *
  * This used to be copy-pasted into every consumer (`tech-docs`' `global.css`,
  * this repo's `playground/app.css`, `app/src/app.css`) with a comment
@@ -22,7 +26,7 @@
  */
 
 :root {
-  --bg: #000000;
+  --bg: #090c0a;
   --fg: #e4ece6;
   --muted: #97a89d;
   --accent: #3ddc84;
