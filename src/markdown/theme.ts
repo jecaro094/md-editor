@@ -1,11 +1,14 @@
 /**
- * Shiki theme for fenced code blocks: a faithful port of VS Code's built-in
- * "Dark Modern" theme (the default dark theme since VS Code 1.71), so code in
- * the docs looks the same as it does in the editor it was written in. Token
- * colors and editor background/foreground are taken directly from VS Code's
- * `dark_modern-color-theme.json`; unlike the site's previous custom theme,
- * Dark Modern barely uses italics, so this drops the italic styling that
- * theme applied to keywords, storage and function names.
+ * Shiki theme for fenced code blocks: VS Code's "Dark Modern" theme with every
+ * token's hue remapped into the green/lime/emerald band (roughly 60-172deg)
+ * that matches the site's accent palette (--accent, --accent-strong, --lime
+ * in theme.css), so code reads as part of the same visual family as the rest
+ * of the page instead of the stock blue/orange VS Code palette. Saturation
+ * and lightness are kept from the source Dark Modern theme so token types
+ * (strings, keywords, numbers, comments, …) stay distinguishable from one
+ * another — only the hue moved. `invalid` (syntax errors) is the one
+ * exception, kept red since an error losing its alarm color would hurt
+ * legibility more than it helps consistency.
  */
 import type { ThemeRegistrationAny } from '@shikijs/types';
 
@@ -13,11 +16,11 @@ export const shikiTheme: ThemeRegistrationAny = {
   "name": "dark-modern",
   "type": "dark",
   "colors": {
-    "editor.background": "#1f1f1f",
-    "editor.foreground": "#cccccc"
+    "editor.background": "#000000",
+    "editor.foreground": "#d9e6dc"
   },
-  "bg": "#1f1f1f",
-  "fg": "#cccccc",
+  "bg": "#000000",
+  "fg": "#d9e6dc",
   "tokenColors": [
     {
       "scope": [
@@ -26,7 +29,7 @@ export const shikiTheme: ThemeRegistrationAny = {
         "string meta.image.inline.markdown"
       ],
       "settings": {
-        "foreground": "#D4D4D4"
+        "foreground": "#d9d9cf"
       }
     },
     {
@@ -44,49 +47,49 @@ export const shikiTheme: ThemeRegistrationAny = {
     {
       "scope": "header",
       "settings": {
-        "foreground": "#000080"
+        "foreground": "#00801f"
       }
     },
     {
       "scope": "comment",
       "settings": {
-        "foreground": "#6A9955"
+        "foreground": "#759955"
       }
     },
     {
       "scope": "constant.language",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "constant.numeric",
       "settings": {
-        "foreground": "#B5CEA8"
+        "foreground": "#bacea8"
       }
     },
     {
       "scope": "constant.regexp",
       "settings": {
-        "foreground": "#646695"
+        "foreground": "#64956f"
       }
     },
     {
       "scope": "entity.name.tag",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "entity.name.tag.css",
       "settings": {
-        "foreground": "#D7BA7D"
+        "foreground": "#c4d77d"
       }
     },
     {
       "scope": "entity.other.attribute-name",
       "settings": {
-        "foreground": "#9CDCFE"
+        "foreground": "#9cfea0"
       }
     },
     {
@@ -101,13 +104,13 @@ export const shikiTheme: ThemeRegistrationAny = {
         "entity.other.attribute-name.scss"
       ],
       "settings": {
-        "foreground": "#D7BA7D"
+        "foreground": "#c4d77d"
       }
     },
     {
       "scope": "invalid",
       "settings": {
-        "foreground": "#F44747"
+        "foreground": "#f44747"
       }
     },
     {
@@ -120,14 +123,14 @@ export const shikiTheme: ThemeRegistrationAny = {
       "scope": "markup.bold",
       "settings": {
         "fontStyle": "bold",
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "markup.heading",
       "settings": {
         "fontStyle": "bold",
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
@@ -145,115 +148,115 @@ export const shikiTheme: ThemeRegistrationAny = {
     {
       "scope": "markup.inserted",
       "settings": {
-        "foreground": "#B5CEA8"
+        "foreground": "#bacea8"
       }
     },
     {
       "scope": "markup.deleted",
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
       "scope": "markup.changed",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "punctuation.definition.quote.begin.markdown",
       "settings": {
-        "foreground": "#6A9955"
+        "foreground": "#759955"
       }
     },
     {
       "scope": "punctuation.definition.list.begin.markdown",
       "settings": {
-        "foreground": "#6796e6"
+        "foreground": "#67e677"
       }
     },
     {
       "scope": "markup.inline.raw",
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
       "scope": "punctuation.definition.tag",
       "settings": {
-        "foreground": "#808080"
+        "foreground": "#8f8f71"
       }
     },
     {
       "scope": "meta.preprocessor",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "meta.preprocessor.string",
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
       "scope": "meta.preprocessor.numeric",
       "settings": {
-        "foreground": "#B5CEA8"
+        "foreground": "#bacea8"
       }
     },
     {
       "scope": "meta.structure.dictionary.key.python",
       "settings": {
-        "foreground": "#9CDCFE"
+        "foreground": "#9cfea0"
       }
     },
     {
       "scope": "meta.diff.header",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "storage",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "storage.type",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "storage.modifier",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "string",
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
       "scope": "string.tag",
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
       "scope": "string.value",
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
       "scope": "string.regexp",
       "settings": {
-        "foreground": "#d16969"
+        "foreground": "#d1d169"
       }
     },
     {
@@ -263,13 +266,13 @@ export const shikiTheme: ThemeRegistrationAny = {
         "punctuation.section.embedded"
       ],
       "settings": {
-        "foreground": "#569cd6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "meta.template.expression",
       "settings": {
-        "foreground": "#d4d4d4"
+        "foreground": "#d9d9cf"
       }
     },
     {
@@ -282,25 +285,25 @@ export const shikiTheme: ThemeRegistrationAny = {
         "source.coffee.embedded"
       ],
       "settings": {
-        "foreground": "#9CDCFE"
+        "foreground": "#9cfea0"
       }
     },
     {
       "scope": "keyword",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "keyword.control",
       "settings": {
-        "foreground": "#C586C0"
+        "foreground": "#86c5ab"
       }
     },
     {
       "scope": "keyword.operator",
       "settings": {
-        "foreground": "#D4D4D4"
+        "foreground": "#d9d9cf"
       }
     },
     {
@@ -317,13 +320,13 @@ export const shikiTheme: ThemeRegistrationAny = {
         "keyword.operator.wordlike"
       ],
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "keyword.other.unit",
       "settings": {
-        "foreground": "#B5CEA8"
+        "foreground": "#bacea8"
       }
     },
     {
@@ -332,19 +335,19 @@ export const shikiTheme: ThemeRegistrationAny = {
         "punctuation.section.embedded.end.php"
       ],
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "support.function.git-rebase",
       "settings": {
-        "foreground": "#9CDCFE"
+        "foreground": "#9cfea0"
       }
     },
     {
       "scope": "constant.sha.git-rebase",
       "settings": {
-        "foreground": "#B5CEA8"
+        "foreground": "#bacea8"
       }
     },
     {
@@ -354,13 +357,13 @@ export const shikiTheme: ThemeRegistrationAny = {
         "storage.modifier.package.java"
       ],
       "settings": {
-        "foreground": "#D4D4D4"
+        "foreground": "#d9d9cf"
       }
     },
     {
       "scope": "variable.language",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
@@ -372,7 +375,7 @@ export const shikiTheme: ThemeRegistrationAny = {
         "entity.name.operator.custom-literal"
       ],
       "settings": {
-        "foreground": "#DCDCAA"
+        "foreground": "#ccdcaa"
       }
     },
     {
@@ -411,7 +414,7 @@ export const shikiTheme: ThemeRegistrationAny = {
         "storage.type.primitive.groovy"
       ],
       "settings": {
-        "foreground": "#4EC9B0"
+        "foreground": "#5ec94e"
       }
     },
     {
@@ -424,7 +427,7 @@ export const shikiTheme: ThemeRegistrationAny = {
         "entity.other.inherited-class"
       ],
       "settings": {
-        "foreground": "#4EC9B0"
+        "foreground": "#5ec94e"
       }
     },
     {
@@ -435,13 +438,13 @@ export const shikiTheme: ThemeRegistrationAny = {
         "entity.name.variable"
       ],
       "settings": {
-        "foreground": "#9CDCFE"
+        "foreground": "#9cfea0"
       }
     },
     {
       "scope": "meta.object-literal.key",
       "settings": {
-        "foreground": "#9CDCFE"
+        "foreground": "#9cfea0"
       }
     },
     {
@@ -455,7 +458,7 @@ export const shikiTheme: ThemeRegistrationAny = {
         "support.constant.color"
       ],
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
@@ -469,7 +472,7 @@ export const shikiTheme: ThemeRegistrationAny = {
         "support.other.parenthesis.regexp"
       ],
       "settings": {
-        "foreground": "#CE9178"
+        "foreground": "#c6ce78"
       }
     },
     {
@@ -480,49 +483,49 @@ export const shikiTheme: ThemeRegistrationAny = {
         "constant.character.set.regexp"
       ],
       "settings": {
-        "foreground": "#d16969"
+        "foreground": "#d1d169"
       }
     },
     {
       "scope": "keyword.operator.quantifier.regexp",
       "settings": {
-        "foreground": "#d7ba7d"
+        "foreground": "#c4d77d"
       }
     },
     {
       "scope": "keyword.operator.or.regexp",
       "settings": {
-        "foreground": "#DCDCAA"
+        "foreground": "#ccdcaa"
       }
     },
     {
       "scope": "keyword.control.anchor.regexp",
       "settings": {
-        "foreground": "#DCDCAA"
+        "foreground": "#ccdcaa"
       }
     },
     {
       "scope": "constant.character",
       "settings": {
-        "foreground": "#569cd6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "constant.character.escape",
       "settings": {
-        "foreground": "#d7ba7d"
+        "foreground": "#c4d77d"
       }
     },
     {
       "scope": "entity.name.label",
       "settings": {
-        "foreground": "#C8C8C8"
+        "foreground": "#cfcfc1"
       }
     },
     {
       "scope": "entity.name.type.class",
       "settings": {
-        "foreground": "#4EC9B0"
+        "foreground": "#5ec94e"
       }
     },
     {
@@ -531,37 +534,37 @@ export const shikiTheme: ThemeRegistrationAny = {
         "punctuation.section.class.end"
       ],
       "settings": {
-        "foreground": "#D4D4D4"
+        "foreground": "#d9d9cf"
       }
     },
     {
       "scope": "entity.name.function.member",
       "settings": {
-        "foreground": "#DCDCAA"
+        "foreground": "#ccdcaa"
       }
     },
     {
       "scope": "punctuation.definition.variable.php",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     },
     {
       "scope": "keyword.operator.other.powershell",
       "settings": {
-        "foreground": "#C8C8C8"
+        "foreground": "#cfcfc1"
       }
     },
     {
       "scope": "keyword.other.statement-separator.powershell",
       "settings": {
-        "foreground": "#C8C8C8"
+        "foreground": "#cfcfc1"
       }
     },
     {
       "scope": "entity.name.section.markdown",
       "settings": {
-        "foreground": "#569CD6"
+        "foreground": "#56d660"
       }
     }
   ]

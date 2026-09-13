@@ -81,7 +81,7 @@
 }
 
 .doc strong {
-  color: #fff;
+  color: var(--fg, #e4ece6);
 }
 
 .doc blockquote {
@@ -157,7 +157,7 @@
   border: 1px solid color-mix(in srgb, var(--adm-accent) 40%, transparent);
   border-left: 3px solid var(--adm-accent);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--adm-accent) 8%, var(--bg, #0f1115));
+  background: color-mix(in srgb, var(--adm-accent) 8%, var(--bg, #000000));
 }
 .doc .admonition > :last-child {
   margin-bottom: 0;

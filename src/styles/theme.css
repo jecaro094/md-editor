@@ -1,9 +1,11 @@
 /*
  * Shared page chrome: the dark theme tokens, the box-sizing reset, the ~17px
- * base scale, the drifting background blobs, and the `.expressive-code` frame
- * that `rehypeCodeFrame` (see `src/markdown/index.ts`) produces around every
- * fenced block — `.expressive-code`, `.code-title-bar`, `.code-lang`,
- * `.copy-btn`.
+ * base scale, and the `.expressive-code` frame that `rehypeCodeFrame` (see
+ * `src/markdown/index.ts`) produces around every fenced block —
+ * `.expressive-code`, `.code-title-bar`, `.code-lang`, `.copy-btn`.
+ *
+ * `--bg` is pure black (#000) and flat — no gradients or glow blobs — by
+ * design, so documentation pages read as a single uniform black surface.
  *
  * This used to be copy-pasted into every consumer (`tech-docs`' `global.css`,
  * this repo's `playground/app.css`, `app/src/app.css`) with a comment
@@ -20,7 +22,7 @@
  */
 
 :root {
-  --bg: #0f1115;
+  --bg: #000000;
   --fg: #e4ece6;
   --muted: #97a89d;
   --accent: #3ddc84;
@@ -63,48 +65,6 @@ a {
 }
 a:hover {
   text-decoration: underline;
-}
-
-/* Drifting background blobs */
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(100px);
-  z-index: -1;
-  pointer-events: none;
-  will-change: transform;
-}
-body::before {
-  width: 42vw;
-  height: 42vw;
-  background: rgba(61, 220, 132, 0.16);
-  top: -12vw;
-  left: -12vw;
-  animation: drift-a 20s ease-in-out infinite;
-}
-body::after {
-  width: 36vw;
-  height: 36vw;
-  background: rgba(198, 255, 79, 0.12);
-  bottom: -12vw;
-  right: -10vw;
-  animation: drift-b 26s ease-in-out infinite;
-}
-@keyframes drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(12vw, 8vw) scale(1.15); }
-}
-@keyframes drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-10vw, -10vw) scale(1.1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  body::before,
-  body::after {
-    animation: none;
-  }
 }
 
 /* Code block — the frame `rehypeCodeFrame` wraps every top-level `<pre>` in */
@@ -167,7 +127,7 @@ body::after {
   font-size: 14px; /* pinned; does not follow the global scale */
   font-feature-settings: "liga" 0;
   line-height: 1.65;
-  color: #d4d4d4; /* fallback for untokenised text, matches VS Code Dark Modern */
+  color: #d9e6dc; /* fallback for untokenised text, matches shikiTheme's fg */
   tab-size: 2;
 }
 
