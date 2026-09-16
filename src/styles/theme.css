@@ -29,8 +29,8 @@
   --bg: #090c0a;
   --fg: #e4ece6;
   --muted: #97a89d;
-  --accent: #3ddc84;
-  --accent-strong: #2bb673;
+  --accent:       #7bb8ff;
+  --accent-strong: #5a9ae6;
   --lime: #cbe6a0;
   --border: #262a33;
 }
@@ -73,12 +73,12 @@ a:hover {
 
 /* Code block — the frame `rehypeCodeFrame` wraps every top-level `<pre>` in */
 .expressive-code {
-  margin: 1.5rem 0;
-  border-radius: 0.625rem;
+  margin: 1.75rem 0;
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
   background: color-mix(in srgb, var(--bg) 97%, var(--accent) 3%);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
 .expressive-code .code-title-bar {
@@ -86,9 +86,9 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.5rem 0.75rem 0.5rem 1rem;
-  background: color-mix(in srgb, var(--accent) 3.5%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 9%, var(--border));
+  padding: 0.6rem 0.85rem 0.6rem 1rem;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border));
 }
 
 .expressive-code .code-lang {
@@ -131,7 +131,7 @@ a:hover {
   font-size: 14px; /* pinned; does not follow the global scale */
   font-feature-settings: "liga" 0;
   line-height: 1.65;
-  color: #d9e6dc; /* fallback for untokenised text, matches shikiTheme's fg */
+  color: #D4D4D4; /* fallback for untokenised text, matches shikiTheme's fg */
   tab-size: 2;
 }
 

@@ -84,7 +84,7 @@
   white-space: nowrap;
 }
 .mde-status[data-dirty="true"] {
-  color: var(--lime, #c6ff4f);
+  color: var(--lime, #a3c8ff);
 }
 .mde-status[data-dirty="true"]::before {
   content: "● ";
@@ -103,13 +103,13 @@
   padding: 0.35rem 0.95rem;
   border: 0;
   border-radius: 6px;
-  background: var(--accent, #3ddc84);
+  background: var(--accent, #4f8cff);
   color: var(--bg, #090c0a);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 .mde-bar-actions button:hover {
-  background: var(--accent-strong, #2bb673);
+  background: var(--accent-strong, #3a7ae6);
 }
 .mde-bar-actions button:disabled {
   opacity: 0.5;
@@ -132,11 +132,11 @@
 }
 .mde-bar-actions .mde-toggle[aria-pressed="true"] {
   color: var(--fg, #e4ece6);
-  border-color: var(--accent, #3ddc84);
+  border-color: var(--accent, #4f8cff);
 }
 .mde-bar-actions .mde-toggle[aria-pressed="true"]::before {
   content: "● ";
-  color: var(--accent, #3ddc84);
+  color: var(--accent, #4f8cff);
 }
 
 /* Split view */
@@ -202,7 +202,7 @@
   animation: mde-fade-in-up 0.2s ease both;
 }
 .mde-toast-ok {
-  border-left-color: var(--accent, #3ddc84);
+  border-left-color: var(--accent, #4f8cff);
 }
 .mde-toast-danger {
   border-left-color: #f2555a;
